@@ -1,0 +1,69 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+android {
+    compileSdk 35
+    defaultConfig {
+        applicationId "life.hnj.sms2telegram"
+        minSdkVersion 22
+        //noinspection OldTargetApi
+        targetSdk 34
+        versionCode System.getenv("VERSION_CODE") == null ? 1 : System.getenv("VERSION_CODE").toInteger()
+        versionName System.getenv("VERSION_NAME") == null ? "Debug": System.getenv("VERSION_NAME").toString()
+    }
+
+    compileOptions {
+        sourceCompatibility 11
+        targetCompatibility 11
+    }
+
+    kotlinOptions {
+        jvmTarget = '11'
+    }
+
+    signingConfigs {
+        release {
+            storeFile file("keys.jks")
+            storePassword project.hasProperty("KEYSTORE_PASS") ? KEYSTORE_PASS : System.getenv("KEYSTORE_PASS")
+            keyAlias project.hasProperty("ALIAS_NAME") ? ALIAS_NAME : System.getenv("ALIAS_NAME")
+            keyPassword project.hasProperty("ALIAS_PASS") ? ALIAS_PASS : System.getenv("ALIAS_PASS")
+            v1SigningEnabled true
+            v2SigningEnabled true
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.release
+            ndk{
+                //noinspection ChromeOsAbiSupport
+                abiFilters "armeabi-v7a", "arm64-v8a"
+            }
+        }
+    }
+    namespace 'life.hnj.sms2telegram'
+}
+
+dependencies {
+    implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'com.google.android.material:material:1.12.0'
+    implementation 'androidx.browser:browser:1.8.0'
+    implementation 'com.squareup.okio:okio:3.9.1'
+    implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.14'
+    implementation 'com.squareup.okhttp3:okhttp-dnsoverhttps:5.0.0-alpha.14'
+    implementation 'org.conscrypt:conscrypt-android:2.5.3'
+    implementation 'com.google.code.gson:gson:2.11.0'
+    implementation 'io.github.pilgr:paperdb:2.7.2'
+    implementation 'com.github.yuriy-budiyev:code-scanner:2.1.0'
+    implementation 'androidx.room:room-runtime:2.6.1'
+    implementation 'androidx.core:core-ktx:1.13.1'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.25'
+}
+
+// tasks.register('copy_language_pack', Copy) {
+   // description 'Copy the language pack to the source directory, replace the placeholder file'
+   // from 'language_pack/'
+    // into 'src/main/res/'
+    // exclude '**/README.md'
+   // include '**/*'
+// }
